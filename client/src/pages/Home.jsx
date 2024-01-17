@@ -1,7 +1,9 @@
 
 
-export const Home = () => {
-  return (
-    <div>Home</div>
-  )
-}
+const Signin = () => {
+    return (
+      <div>Signin</div>
+    )
+  }
+  
+  export default Signin
