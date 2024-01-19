@@ -3,9 +3,11 @@ import mongoose from 'mongoose';
 import dotenv from 'dotenv';
 import userRouter from './routes/userRoute.js';
 import authRouter from './routes/authRoute.js';
+
 dotenv.config();
 
 const app = express();
+
 
 mongoose.connect(process.env.MONGO_URL)
 .then(()=>{
