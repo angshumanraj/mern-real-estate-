@@ -4,7 +4,7 @@ import dotenv from 'dotenv';
 import userRouter from './routes/userRoute.js';
 import authRouter from './routes/authRoute.js';
 
-dotenv.config();
+dotenv.config();  
 
 const app = express();
 
