@@ -23,7 +23,7 @@ export const Header = () => {
             <Link to='/about'>    
                 <li hidden className='sm:inline text-slate-800  hover:underline'>About</li>
             </Link>
-            <Link to='signin'>    
+            <Link to='/signin'>    
                 <li className='sm:inline text-slate-800  hover:underline'>Sign in</li>
             </Link>
             </ul>
