@@ -20,5 +20,9 @@
     "mongoose": "^8.1.0",
     "nodemon": "^3.0.2",
     "react-redux": "^9.1.0"
+  },
+  "devDependencies": {
+    "@types/cookie-parser": "^1.4.6",
+    "@types/jsonwebtoken": "^9.0.5"
   }
 }

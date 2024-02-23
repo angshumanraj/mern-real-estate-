@@ -1,13 +1,15 @@
 import express from 'express';
 import mongoose from 'mongoose';
 import dotenv from 'dotenv';
+import cookieParser from 'cookie-parser';
 import userRouter from './routes/userRoute.js';
 import authRouter from './routes/authRoute.js';
 
 dotenv.config();  
 
 const app = express();
-
+app.use(express.json());
+app.use(cookieParser());
 
 mongoose.connect(process.env.MONGO_URL)
 .then(()=>{
@@ -17,7 +19,7 @@ mongoose.connect(process.env.MONGO_URL)
 .catch((err)=>{
     console.log(err);
 })
-app.use(express.json())
+
 
 app.listen(3005,()=>{
     console.log("server is listening to port 3005")
