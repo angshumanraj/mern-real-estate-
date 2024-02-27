@@ -6,7 +6,7 @@ import { signInSuccess,
   
   updateUserFailure,
   updateUserStart,
-  updateUserSuccess } from "../redux/user/userSlice.js";
+  updateUserSuccess } from "../redux/user/userSlice";
 
 const Profile = () => {
   const [updateSuccess, setUpdateSuccess] = useState(false);
