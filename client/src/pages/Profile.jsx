@@ -3,11 +3,10 @@ import { useEffect, useRef, useState } from "react";
 import { getDownloadURL, getStorage, ref, uploadBytesResumable } from 'firebase/storage';
 import { app } from "../firebase";
 import { signInSuccess,
-  signInFailure,
-  signInStart,
+  
   updateUserFailure,
   updateUserStart,
-  updateUserStartSuccess } from "../redux/user/userSlice";
+  updateUserSuccess } from "../redux/user/userSlice.js";
 
 const Profile = () => {
   const [updateSuccess, setUpdateSuccess] = useState(false);
@@ -87,7 +86,7 @@ const Profile = () => {
         dispatch(updateUserFailure(data.message));
         return;
       }
-      dispatch(updateUserStartSuccess(data))
+      dispatch(updateUserSuccess(data))
       setUpdateSuccess(true)
       
     } catch (error) {
