@@ -2,7 +2,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { useEffect, useRef, useState } from "react";
 import { getDownloadURL, getStorage, ref, uploadBytesResumable } from 'firebase/storage';
 import { app } from "../firebase";
-import { signInSuccess,
+import { deleteUserFailure, deleteUserStart, deleteUserSuccess, signInSuccess,
   
   updateUserFailure,
   updateUserStart,
@@ -11,7 +11,7 @@ import { signInSuccess,
 const Profile = () => {
   const [updateSuccess, setUpdateSuccess] = useState(false);
   const dispatch = useDispatch();
-  const { currentUser,loading,error } = useSelector((state) => state.user);
+  const { currentUser,loading, } = useSelector((state) => state.user);
   const fileRef=useRef(null);
   const [file,setFile]=useState(undefined);
   const[filePercentage,setFilePercentage]=useState(0);
@@ -93,6 +93,24 @@ const Profile = () => {
       dispatch(updateUserFailure(error.message))
     }   
   };
+
+    const handleDeleteUser=async()=>{
+      try {
+        dispatch(deleteUserStart());
+        const res= await fetch(`api/user/delete/${currentUser._id}`,{
+          method: 'DELETE',
+        });
+        const data= await res.json();
+        if(data.success === false){
+          dispatch(deleteUserFailure(data.message))
+          return
+        }
+        dispatch(deleteUserSuccess(data));
+      } catch (error) {
+        console.log(error)
+        dispatch(deleteUserFailure(error.message))
+      }
+    }
   return (
     <div>
       <h1 className="text-3xl font-semibold my-7 text-center ">Profile</h1>
@@ -159,10 +177,9 @@ const Profile = () => {
         </button>
 
         <div className="flex justify-between mt-5 w-full">
-          <span className="text-red-700 cursor-pointer">Delete Account</span>
+          <span onClick={handleDeleteUser} className="text-red-700 cursor-pointer">Delete Account</span>
           <span className="text-green-500 cursor-pointer">Sign Out</span>
         </div>
-        {error && <p className="text-red-700 mt-5 text-center">{error}</p>}
         {updateSuccess && <p className="text-green-500 mt-5 text-center">User successfully updated</p>}
    
       </form>

@@ -10,6 +10,6 @@ router.get('/test',test);
 
 router.post('/update/:id',verifyUser,updateUser);
 
-router.delete('/update/:id',verifyUser,deleteUser)
+router.delete('/delete/:id',verifyUser,deleteUser)
 
 export default router;
