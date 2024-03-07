@@ -5,7 +5,7 @@
 const About = () => {
   return (
     <div>
-      <h3>This page is not completed yet ,only configured authentication part  </h3>
+      <h1>This page is not completed yet ,only configured authentication part  </h1>
     </div>
   )
 }
