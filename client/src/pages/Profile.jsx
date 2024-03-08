@@ -2,6 +2,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { useEffect, useRef, useState } from "react";
 import { getDownloadURL, getStorage, ref, uploadBytesResumable } from 'firebase/storage';
 import { app } from "../firebase";
+import {Link} from "react-router-dom"
 import { deleteUserFailure, 
   deleteUserStart, 
   deleteUserSuccess,  
@@ -160,7 +161,7 @@ const Profile = () => {
       </p>
 
         {/* progress bar */}
-        <div className="w-full bg-gray-200 rounded-lg h-4 relative">
+        <div  className="w-full bg-gray-200 rounded-lg h-4 relative">
         <div className="bg-green-500 absolute top-0 left-0 h-full" 
              style={{ width: `${filePercentage}%` }}>
         </div>
@@ -195,7 +196,8 @@ const Profile = () => {
         >
           {loading ? 'Loading...' : 'Update'}
         </button>
-
+          <Link className="bg-orange-500 text-white p-3 rounded-lg uppercase
+            text-center hover:opacity-95 w-full" to={"/create-listing"}>Create Listing</Link>
         <div className="flex justify-between mt-5 w-full">
           <span onClick={handleDeleteUser} className="text-red-700 cursor-pointer">Delete Account</span>
           <span onClick={handleSignOut} className="text-green-500 cursor-pointer">Sign Out</span>
