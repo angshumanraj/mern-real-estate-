@@ -2,9 +2,10 @@ import { getDownloadURL, getStorage, ref, uploadBytesResumable } from "firebase/
 import { useState } from "react";
 import { app } from "../firebase";
 import { useSelector } from "react-redux";
-
+import { useNavigate } from "react-router-dom";
 export const CreateListing = () => {
-  const {currentUser}=useSelector(state =>state.user)
+  const {currentUser}=useSelector(state =>state.user);
+  const navigate=useNavigate()
   const[files,setFiles]=useState([]);
   const [error,setError]=useState(false);
   const[loading,setLoading]=useState(false)
@@ -116,8 +117,11 @@ export const CreateListing = () => {
     }
   };
   const handleSubmit=async(e)=>{
+    
     e.preventDefault();
     try {
+      if(formData.imgUrls.length <1) return setError('you must upload atleast 1 image')
+      if(formData.regularPrice< formData.discountPrice) return setError('Discount price must be less than regular price')
       setLoading(true);
       setError(false);
       const res=await fetch('/api/listing/create',{
@@ -135,6 +139,7 @@ export const CreateListing = () => {
       if(data.success=== false){
         setError(data.message)
       }
+      navigate(`/listing/${data._id}`)
     } catch (error) {
       setError(error.message);
       setLoading(false)
@@ -228,8 +233,9 @@ export const CreateListing = () => {
                 checked={formData.offer} />
               <span>Offer</span>
             </div> 
-
           </div>
+        
+
           <div className='flex flex-wrap gap-6'>
             <div className='flex items-center gap-2'>
               <input
@@ -274,13 +280,13 @@ export const CreateListing = () => {
                 <span className='text-xs'>($ / month)</span>
               </div>
             </div>
-
-
+          </div>
+          {formData.offer && (
             <div className='flex items-center gap-2'>
               <input
                 type='number'
                 id='discountPrice'
-                min='1'
+                min='0'
                 max='1000000'
                 required
                 className='p-3 border border-gray-300 rounded-lg'
@@ -292,7 +298,9 @@ export const CreateListing = () => {
                 <span className='text-xs'>($ / month)</span>
               </div>
             </div>
-          </div>
+          )}
+            
+          
         </div>
 
         <div className="flex flex-col flex-1 gap-4">
@@ -310,7 +318,7 @@ export const CreateListing = () => {
             <button 
               type="button"
               onClick={handleImageSubmit}
-              className='p-3 text-green-700 border border-green-700 rounded uppercase hover:shadow-lg disabled:opacity-80'>{uploading?'uploading':'upload'}</button>
+              className='p-3 text-green-700 border border-green-700 rounded uppercase hover:shadow-lg disabled:opacity-80'>{uploading?'uploading...':'upload'}</button>
           </div>
         <div >
           {<p className="text-red-700 text-sm"> {imageUploadError && imageUploadError}</p>}
@@ -323,7 +331,7 @@ export const CreateListing = () => {
             ))
           }
         </div>
-        <button className='p-3 bg-orange-400 text-white rounded-lg uppercase hover:opacity-95 disabled:opacity-80'>
+        <button disabled={loading || uploading}  className='p-3 bg-orange-400 text-white rounded-lg uppercase hover:opacity-95 disabled:opacity-80'>
           {loading? 'Createing...': 'Create Listing'}
         </button>
         {error && <p  className="text-red-700 text-sm">{error}</p>}
