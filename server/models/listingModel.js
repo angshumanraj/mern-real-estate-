@@ -10,6 +10,9 @@ const listingSchema= new mongoose.Schema(
             type:String,
             require:true,
         },
+        parking:{
+            type:Boolean,
+        },
         address:{
             type:String,
             require:true,
@@ -30,7 +33,7 @@ const listingSchema= new mongoose.Schema(
             type:Number,
             require:true
         },
-        fernished:{
+        furnished:{
             type:Boolean,
             require:true,
         },
