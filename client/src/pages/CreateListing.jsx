@@ -123,7 +123,7 @@ export const CreateListing = () => {
       const res=await fetch('/api/listing/create',{
         method:'POST',
         headers:{
-          'Content-Type': 'applicaiton/json',
+          'Content-Type': 'application/json',
         },
         body:JSON.stringify({
           ...formData,
