@@ -10,4 +10,3 @@ export const createListing = async(req,res,next)=>{
         next(error)
     }
 };
-
