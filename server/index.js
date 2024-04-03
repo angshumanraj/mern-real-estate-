@@ -9,11 +9,6 @@ import path  from 'path';
 dotenv.config();  
 
 
-const _dirname=path.resolve();
-
-const app = express();
-app.use(express.json());
-app.use(cookieParser());
 
 mongoose.connect(process.env.MONGO_URL)
 .then(()=>{
@@ -23,6 +18,11 @@ mongoose.connect(process.env.MONGO_URL)
 .catch((err)=>{
     console.log(err);
 })
+
+const _dirname=path.resolve();
+const app = express();
+app.use(express.json());
+app.use(cookieParser());
 
 
 app.listen(3005,()=>{

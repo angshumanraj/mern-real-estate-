@@ -158,8 +158,6 @@ const Profile = () => {
           console.log(data.message)
           return;
         }
-
-
         setUserListings((prev)=> prev.filter((listing)=>listing._id !== listingId));
       } catch (error) {
         console.log(error.message)    
@@ -261,7 +259,9 @@ const Profile = () => {
               </Link>
               <div className="flex flex-col item-center">
                 <button onClick={()=>handleDeleteListing(listings._id)} className="text-red-700">Delete</button>
-                <button  className="text-green-700">Edit</button>
+                <Link to={`/update-listing/${listings._id}`}>
+                  <button  className="text-green-700">Edit</button>
+                </Link>
               </div>
             </div>
           ))}
