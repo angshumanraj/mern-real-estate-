@@ -45,18 +45,23 @@ export const updateListing=async(req,res,next)=>{
         res.status(200).json(updatedListing);
 
     } catch (error) {
+
         next(error)
     }
 };
 
 export const getListing = async (req, res, next) => {
+    console.log(req.params.id)
     try {
+        
       const listing = await Listing.findById(req.params.id);
+      console.log(listing)
       if (!listing) {
         return next(errorHandler(404, 'Listing not found!'));
       }
       res.status(200).json(listing);
     } catch (error) {
+        console.log(error)
       next(error);
     }
   };
