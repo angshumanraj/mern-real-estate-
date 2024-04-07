@@ -49,6 +49,12 @@ const listingSchema= new mongoose.Schema(
             type:String,
             require:true,
         },
+        latitude:{
+            type:Number,
+        }, 
+        longitude:{
+            type:Number
+        } 
     },{timestamps:true}
     
 )

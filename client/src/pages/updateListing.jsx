@@ -4,7 +4,12 @@ import { app } from "../firebase";
 import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { useParams } from "react-router-dom";
+
+
+
+
 export const UpdateListing =()=> {
+  
   const {currentUser}=useSelector(state =>state.user);
   const navigate=useNavigate()
   const[files,setFiles]=useState([]);
@@ -28,7 +33,7 @@ export const UpdateListing =()=> {
   const [imageUploadError,setImageUploaderror]=useState(false)
   const[uploading,setUploading]=useState(false)
   const params=useParams();
-  console.log(formData);
+  
 
   useEffect(() => {
     const fetchListing = async () => {
@@ -36,7 +41,7 @@ export const UpdateListing =()=> {
       const res = await fetch(`/api/listing/get/${listingId}`);
       const data = await res.json();
       if (data.success === false) {
-        console.log(data.message);
+        
         return;
       }
       setFormData(data);
@@ -62,6 +67,7 @@ export const UpdateListing =()=> {
           ...formData,
           imgUrls:formData.imgUrls.concat(urls)
         });
+        console.log("this is the form data",formData)
         setImageUploaderror(false);
         setUploading(false)   
 
@@ -137,8 +143,16 @@ export const UpdateListing =()=> {
     
     e.preventDefault();
     try {
-      if(formData.imgUrls.length <1) return setError('you must upload atleast 1 image')
-      if(formData.regularPrice< formData.discountPrice) return setError('Discount price must be less than regular price')
+      const response=  await fetch(`https://geocode.maps.co/search?q=${formData.address}&api_key=66111c6d62c79603413361wol5ae8e4`);
+
+      const data1=await response.json();
+      console.log("map data",data1);
+      //extracting latitude and longitude
+      const latitude = parseFloat(data1[0].lat);
+      const longitude = parseFloat(data1[0].lon);
+      console.log("the longitudes and latitudes are ",latitude,  longitude)
+      if(formData.imgUrls.length <1) return setError('you must upload atleast 1 image');
+      if(formData.regularPrice< formData.discountPrice) return setError('Discount price must be less than regular price'); 
       setLoading(true);
       setError(false);
       const res=await fetch(`/api/listing/update/${params.listingId}`,{
@@ -148,7 +162,9 @@ export const UpdateListing =()=> {
         },
         body:JSON.stringify({
           ...formData,
-          userRef:currentUser._id
+          userRef:currentUser._id,
+          latitude:latitude,
+          longitude:longitude
         }),
       });
       const data=await res.json();
@@ -156,7 +172,9 @@ export const UpdateListing =()=> {
       if(data.success=== false){
         setError(data.message)
       }
-      navigate(`/listing/${data._id}`)
+      navigate(`/listing/${data._id}`,{
+        state:{...formData,latitude,longitude}
+      })
     } catch (error) {
       setError(error.message);
       setLoading(false)

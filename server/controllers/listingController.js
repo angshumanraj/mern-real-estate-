@@ -29,7 +29,7 @@ export const deleteListing=async(req,res,next)=>{
 
 export const updateListing=async(req,res,next)=>{
     const listing=await Listing.findById(req.params.id);
-    console.log(listing)
+    
     if(!listing){
         return next(errorHandler(404,'No Listing Found'))
     }
@@ -52,6 +52,7 @@ export const updateListing=async(req,res,next)=>{
 
 export const getListing = async (req, res, next) => {
     const listingId = req.params.id;
+    console.log(listingId)
     if (!listingId) {
         return next(errorHandler(400, 'Listing ID is missing.'));
     }
