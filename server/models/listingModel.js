@@ -10,6 +10,10 @@ const listingSchema= new mongoose.Schema(
             type:String,
             require:true,
         },
+        type: {
+            type: String,
+            required: true,
+        },
         parking:{
             type:Boolean,
         },

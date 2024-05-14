@@ -139,47 +139,44 @@ export const UpdateListing =()=> {
       });
     }
   };
-  const handleSubmit=async(e)=>{
-    
+  const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response=  await fetch(`https://geocode.maps.co/search?q=${formData.address}&api_key=66111c6d62c79603413361wol5ae8e4`);
-
-      const data1=await response.json();
-      console.log("map data",data1);
-      //extracting latitude and longitude
+      const response = await fetch(`https://geocode.maps.co/search?q=${formData.address}&api_key=66111c6d62c79603413361wol5ae8e4`);
+      const data1 = await response.json();
       const latitude = parseFloat(data1[0].lat);
       const longitude = parseFloat(data1[0].lon);
-      console.log("the longitudes and latitudes are ",latitude,  longitude)
-      if(formData.imgUrls.length <1) return setError('you must upload atleast 1 image');
-      if(formData.regularPrice< formData.discountPrice) return setError('Discount price must be less than regular price'); 
+      if (formData.imgUrls.length < 1) return setError('you must upload at least 1 image');
+      if (formData.regularPrice < formData.discountPrice) return setError('Discount price must be less than regular price');
       setLoading(true);
       setError(false);
-      const res=await fetch(`/api/listing/update/${params.listingId}`,{
-        method:'POST',
-        headers:{
+      const res = await fetch(`/api/listing/update/${params.listingId}`, {
+        method: 'POST',
+        headers: {
           'Content-Type': 'application/json',
         },
-        body:JSON.stringify({
+        body: JSON.stringify({
           ...formData,
-          userRef:currentUser._id,
-          latitude:latitude,
-          longitude:longitude
+          userRef: currentUser._id,
+          latitude: latitude,
+          longitude: longitude
         }),
       });
-      const data=await res.json();
+      const data = await res.json();
       setLoading(false)
-      if(data.success=== false){
+      if (data.success === false) {
         setError(data.message)
       }
-      navigate(`/listing/${data._id}`,{
-        state:{...formData,latitude,longitude}
-      })
+      // Navigate to the listing page after successful update
+      navigate(`/listing/${params.listingId}`, {
+        state: { ...formData, latitude, longitude }
+      });
     } catch (error) {
       setError(error.message);
       setLoading(false)
     }
   }
+  
   return (
     <main className='p-3 max-w-4xl mx-auto'>
       <h1 className='text-3xl font-semibold text-center my-7'>
