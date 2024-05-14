@@ -1,7 +1,7 @@
 import  { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 
-export const Search = () => {
+export const SearchPage = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const [sidebarData, setSidebarData] = useState({
