@@ -17,9 +17,9 @@ export const SearchPage = () => {
 
   const [loading, setLoading] = useState(false);
   const [listings, setListings] = useState([]);
+  const [visibleListings, setVisibleListings] = useState([]);
+  const [showMore, setShowMore] = useState(false);
 
-  console.log(listings);
-  
   useEffect(() => {
     const urlParams = new URLSearchParams(location.search);
     const searchTermFromUrl = urlParams.get("searchTerm");
@@ -56,7 +56,13 @@ export const SearchPage = () => {
       try {
         const res = await fetch(`/api/listing/get?${searchQuery}`);
         const data = await res.json();
+        if (data.length > 4) {
+          setShowMore(true);
+        } else {
+          setShowMore(false);
+        }
         setListings(data);
+        setVisibleListings(data.slice(0, 4));
       } catch (error) {
         console.error("Error fetching listings:", error);
       } finally {
@@ -68,11 +74,7 @@ export const SearchPage = () => {
   }, [location.search]);
 
   const handleChange = (e) => {
-    if (
-      e.target.id === 'all' ||
-      e.target.id === 'rent' ||
-      e.target.id === 'sale'
-    ) {
+    if (e.target.id === 'all' || e.target.id === 'rent' || e.target.id === 'sale') {
       setSidebarData({ ...sidebarData, type: e.target.id });
     }
 
@@ -80,11 +82,7 @@ export const SearchPage = () => {
       setSidebarData({ ...sidebarData, searchTerm: e.target.value });
     }
 
-    if (
-      e.target.id === 'parking' ||
-      e.target.id === 'furnished' ||
-      e.target.id === 'offer'
-    ) {
+    if (e.target.id === 'parking' || e.target.id === 'furnished' || e.target.id === 'offer') {
       setSidebarData({
         ...sidebarData,
         [e.target.id]: e.target.checked,
@@ -97,8 +95,8 @@ export const SearchPage = () => {
       setSidebarData({ ...sidebarData, sort, order });
     }
   };
+
   const handleListingClick = (listing) => {
-    // Navigate to the Listing page with the selected listing details passed as state
     navigate(`/listing/${listing._id}`, { state: listing });
   };
 
@@ -115,7 +113,14 @@ export const SearchPage = () => {
     const searchQuery = urlParams.toString();
     navigate(`/search?${searchQuery}`);
   };
-  
+
+  const onShowMoreClick = () => {
+    const newVisibleListings = listings.slice(0, visibleListings.length + 4);
+    setVisibleListings(newVisibleListings);
+    if (newVisibleListings.length === listings.length) {
+      setShowMore(false);
+    }
+  };
 
   return (
     <div className="flex flex-col md:flex-row">
@@ -223,7 +228,7 @@ export const SearchPage = () => {
         <h1 className="text-3xl font-semibold border-b p-3 text-slate-700 mt-5">Listing result:</h1>
         {/* Render listings here based on the search criteria */}
         <div className='p-7 flex flex-wrap gap-4'>
-          {!loading && listings.length === 0 && (
+          {!loading && visibleListings.length === 0 && (
             <p className='text-xl text-slate-700'>No listing found!</p>
           )}
           {loading && (
@@ -231,13 +236,22 @@ export const SearchPage = () => {
               Loading...
             </p>
           )}
-          {!loading && listings && listings.map((listing) => (
+          {!loading && visibleListings && visibleListings.map((listing) => (
             <ListingCard 
               key={listing._id} 
               listing={listing} 
               onClick={() => handleListingClick(listing)} 
-            />
+              />
+            
           ))}
+          {showMore && (
+            <button
+              onClick={onShowMoreClick}
+              className="text-green-700 hover:underline p-7 text-lg"
+            >
+              Show More
+            </button>
+          )}
         </div>
       </div>
     </div>
