@@ -1,5 +1,6 @@
-import  { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
+import ListingCard from "../components/ListingCard";
 
 export const SearchPage = () => {
   const location = useLocation();
@@ -17,7 +18,7 @@ export const SearchPage = () => {
   const [loading, setLoading] = useState(false);
   const [listings, setListings] = useState([]);
 
-  console.log(listings)
+  console.log(listings);
   
   useEffect(() => {
     const urlParams = new URLSearchParams(location.search);
@@ -48,19 +49,22 @@ export const SearchPage = () => {
         order: orderFromUrl || "desc",
       });
     }
-    const fetchListings=async()=>{
+
+    const fetchListings = async () => {
       setLoading(true);
-      const searchQuery=urlParams.toString();
-      const res=await fetch(`/api/listing/get?${searchQuery}`);
-      const data=await res.json();
-      
-      setListings(data)
-      setLoading(false);
-      
-      
-    }
+      const searchQuery = urlParams.toString();
+      try {
+        const res = await fetch(`/api/listing/get?${searchQuery}`);
+        const data = await res.json();
+        setListings(data);
+      } catch (error) {
+        console.error("Error fetching listings:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
     fetchListings();
-  
   }, [location.search]);
 
   const handleChange = (e) => {
@@ -83,20 +87,20 @@ export const SearchPage = () => {
     ) {
       setSidebarData({
         ...sidebarData,
-        [e.target.id]:
-          e.target.checked || e.target.checked === 'true' ? true : false,
+        [e.target.id]: e.target.checked,
       });
     }
 
     if (e.target.id === 'sort_order') {
       const sort = e.target.value.split('_')[0] || 'created_at';
-
       const order = e.target.value.split('_')[1] || 'desc';
-
       setSidebarData({ ...sidebarData, sort, order });
     }
   };
-  
+  const handleListingClick = (listing) => {
+    // Navigate to the Listing page with the selected listing details passed as state
+    navigate(`/listing/${listing._id}`, { state: listing });
+  };
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -118,7 +122,7 @@ export const SearchPage = () => {
       <div className="p-7 border-b-2 md:border-r-2 md:min-h-screen">
         <form onSubmit={handleSubmit} className="flex flex-col">
           <div className="flex items-center gap-2 mb-4">
-            <label  className="whitespace-nowrap font-semibold">
+            <label className="whitespace-nowrap font-semibold">
               SearchTerm
             </label>
             <input
@@ -205,7 +209,7 @@ export const SearchPage = () => {
               className='border rounded-lg p-3'
             >
               <option value='regularPrice_desc'>Price high to low</option>
-              <option value='regularPrice_asc'>Price low to hight</option>
+              <option value='regularPrice_asc'>Price low to high</option>
               <option value='createdAt_desc'>Latest</option>
               <option value='createdAt_asc'>Oldest</option>
             </select>
@@ -218,6 +222,23 @@ export const SearchPage = () => {
       <div>
         <h1 className="text-3xl font-semibold border-b p-3 text-slate-700 mt-5">Listing result:</h1>
         {/* Render listings here based on the search criteria */}
+        <div className='p-7 flex flex-wrap gap-4'>
+          {!loading && listings.length === 0 && (
+            <p className='text-xl text-slate-700'>No listing found!</p>
+          )}
+          {loading && (
+            <p className='text-xl text-slate-700 text-center w-full'>
+              Loading...
+            </p>
+          )}
+          {!loading && listings && listings.map((listing) => (
+            <ListingCard 
+              key={listing._id} 
+              listing={listing} 
+              onClick={() => handleListingClick(listing)} 
+            />
+          ))}
+        </div>
       </div>
     </div>
   );

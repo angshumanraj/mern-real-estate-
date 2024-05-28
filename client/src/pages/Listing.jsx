@@ -1,5 +1,5 @@
-import  { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { useParams, useLocation } from "react-router-dom";
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { useSelector } from 'react-redux';
 import SwiperCore from 'swiper';
@@ -8,7 +8,7 @@ import { Navigation } from "swiper/modules";
 import { FaBath, FaBed, FaChair, FaMapMarkerAlt, FaParking, FaShare } from 'react-icons/fa';
 import { Contact } from "../components/Contact";
 import { MapContainer, Marker, Popup, TileLayer } from 'react-leaflet'
-import { useLocation } from 'react-router-dom';
+
 export const Listing = () => {
     
     SwiperCore.use(Navigation)
@@ -18,30 +18,25 @@ export const Listing = () => {
     const [copied, setCopied] = useState(false);
     const [contact, setContact] = useState(true);
     const { id } = useParams();
-    const location=useLocation();
-    const formData=location.state;
-    const{latitude,longitude}=formData
-    console.log("this location in listing page",latitude)  
+    const location = useLocation();
+    const formData = location.state;
+    console.log(location)
+    const { latitude, longitude } = formData;
     const { currentUser } = useSelector((state) => state.user);
     useEffect(() => {
-        console.log(id)
         const fetchingListing = async () => {
             try {
                 setLoading(true);
                 const res = await fetch(`/api/listing/get/${id}`);
-
                 const data = await res.json();
-                console.log(data)
                 if (data.success === false) {
                     setError(true);
                     setLoading(false);
                     return;
                 }
-                
-                setListing(data)
-                setLoading(false)
-                setError(false)
-                
+                setListing(data);
+                setLoading(false);
+                setError(false);
             } catch (error) {
                 setError(true);
                 setLoading(false);
@@ -49,8 +44,6 @@ export const Listing = () => {
         };
         fetchingListing();
     }, [id]);
-   
-    
 
     return (
       <main>
@@ -63,13 +56,14 @@ export const Listing = () => {
                   <Swiper navigation>
                       {listing.imgUrls.map((url) => (
                           <SwiperSlide key={url}>
-                              <div
-                                  className='h-[400px]'
-                                  style={{
-                                      background: `url(${url}) center no-repeat`,
-                                      backgroundSize: 'cover',
-                                  }}
-                              ></div>
+                              
+
+                          <img
+                                src={url}
+                                alt='listing cover'
+                                className='h-[400px] w-full object-cover object-center'
+                            />
+
                           </SwiperSlide>
                       ))}
                   </Swiper>
